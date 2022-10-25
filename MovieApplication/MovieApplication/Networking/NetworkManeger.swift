@@ -1,10 +1,23 @@
 // NetworkManeger.swift
 // Copyright © RoadMap. All rights reserved.
 
-import Foundation
+import UIKit
 
-/// класс
+/// Получение данных по API - основной
 class NetworkManager {
+    static func downLoadImage(url: String, comlition: @escaping (_ image: UIImage) -> ()) {
+        guard let url = URL(string: url) else { return }
+
+        let session = URLSession.shared
+        session.dataTask(with: url) { data, _, _ in
+            if let data = data, let image = UIImage(data: data) {
+                DispatchQueue.main.async {
+                    comlition(image)
+                }
+            }
+        }.resume()
+    }
+
     static func fetchData(url: String, comlition: @escaping (_ movies: MoviesResult) -> ()) {
         guard let url = URL(string: url) else { return }
 

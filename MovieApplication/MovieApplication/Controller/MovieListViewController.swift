@@ -3,7 +3,7 @@
 
 import UIKit
 
-///
+/// Экран выбора фильмов
 final class MovieListViewController: UIViewController {
     private enum Constants {
         static let listCellIdentifire = "listCell"
@@ -14,6 +14,20 @@ final class MovieListViewController: UIViewController {
     // MARK: - Private Properties
 
     private let tableView = UITableView()
+    private lazy var header: UIView = {
+        let headerView = UIView()
+        headerView.frame = CGRect(x: 0, y: 0, width: self.view.bounds.width, height: 50)
+        headerView.backgroundColor = .gray
+        return headerView
+    }()
+
+    private let segmentControll: UISegmentedControl = {
+        let segmentControl = UISegmentedControl()
+        segmentControl.backgroundColor = .blue
+        segmentControl.frame = CGRect(x: 0, y: 0, width: 390, height: 20)
+        return segmentControl
+    }()
+
     private var movies: [Movies]?
 
     // MARK: - Life Cycles
@@ -21,13 +35,11 @@ final class MovieListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
-        print(movies?.count)
     }
 
     // MARK: - Private Methods
 
     private func setupUI() {
-        view.backgroundColor = .blue
         fetchData()
         createTableView()
     }
@@ -47,11 +59,18 @@ final class MovieListViewController: UIViewController {
         tableView.register(MovieListViewCell.self, forCellReuseIdentifier: Constants.listCellIdentifire)
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = UITableView.automaticDimension
-        tableView.allowsSelection = false
+//        tableView.allowsSelection = false
         tableView.dataSource = self
         tableView.delegate = self
+        header.addSubview(segmentControll)
+        tableView.tableHeaderView = header
         view.addSubview(tableView)
         createTableViewAnchor()
+    }
+
+    private func createSegmentControl() {
+        segmentControll.frame = CGRect(x: 0, y: 0, width: 390, height: 20)
+        segmentControll.backgroundColor = .blue
     }
 
     private func createTableViewAnchor() {
@@ -82,5 +101,10 @@ extension MovieListViewController: UITableViewDataSource, UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         UITableView.automaticDimension
+    }
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let descriptionVS = DescriptionViewController()
+        navigationController?.pushViewController(descriptionVS, animated: true)
     }
 }

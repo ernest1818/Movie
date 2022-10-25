@@ -5,12 +5,16 @@ import UIKit
 
 ///
 final class MovieListViewCell: UITableViewCell {
+    private enum Constants {
+        static let imageUrl = "https://image.tmdb.org/t/p/w500"
+        static var imageUrlTwo = ""
+    }
+
     // MARK: - Private properties
 
     private let movieImageView = UIImageView()
     private let movieNameLabel = UILabel()
-    private let discriptionLabel = UILabel()
-    private var movies: Movies?
+    private let descriptionLabel = UILabel()
 
     // MARK: - Life Cycles
 
@@ -26,8 +30,13 @@ final class MovieListViewCell: UITableViewCell {
     // MARK: - Public Methods
 
     func movies(_ movie: Movies) {
-        movies = movie
         movieNameLabel.text = movie.title
+        descriptionLabel.text = movie.overview
+        Constants.imageUrlTwo = movie.posterPath
+        let imageUrl = Constants.imageUrl + Constants.imageUrlTwo
+        NetworkManager.downLoadImage(url: imageUrl) { image in
+            self.movieImageView.image = image
+        }
     }
 
     // MARK: - Private Methods
@@ -39,7 +48,6 @@ final class MovieListViewCell: UITableViewCell {
     }
 
     private func createImageVIew() {
-        movieImageView.backgroundColor = .purple
         movieImageView.layer.cornerRadius = 15
         movieImageView.layer.masksToBounds = true
         movieImageView.contentMode = .scaleAspectFill
@@ -50,15 +58,21 @@ final class MovieListViewCell: UITableViewCell {
 
     private func createNameLabel() {
         movieNameLabel.backgroundColor = .red
+        movieNameLabel.textAlignment = .center
+        movieNameLabel.lineBreakMode = .byWordWrapping
+        movieNameLabel.numberOfLines = 0
+        movieNameLabel.font = .systemFont(ofSize: 12, weight: .semibold)
         movieNameLabel.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(movieNameLabel)
         createNameLabelAnchor()
     }
 
     private func createDiscriptionabel() {
-        discriptionLabel.backgroundColor = .red
-        discriptionLabel.translatesAutoresizingMaskIntoConstraints = false
-        contentView.addSubview(discriptionLabel)
+        descriptionLabel.backgroundColor = .red
+        descriptionLabel.numberOfLines = 10
+        descriptionLabel.font = .systemFont(ofSize: 15, weight: .semibold)
+        descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(descriptionLabel)
         createDiscriptionLabelAnchor()
     }
 
@@ -72,15 +86,13 @@ final class MovieListViewCell: UITableViewCell {
 
     private func createNameLabelAnchor() {
         movieNameLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8).isActive = true
-        movieNameLabel.leftAnchor.constraint(equalTo: movieImageView.rightAnchor, constant: 50).isActive = true
-        movieNameLabel.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -50).isActive = true
-        movieNameLabel.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        movieNameLabel.leftAnchor.constraint(equalTo: movieImageView.rightAnchor, constant: 40).isActive = true
+        movieNameLabel.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -40).isActive = true
     }
 
     private func createDiscriptionLabelAnchor() {
-        discriptionLabel.topAnchor.constraint(equalTo: movieNameLabel.bottomAnchor, constant: 16).isActive = true
-        discriptionLabel.leftAnchor.constraint(equalTo: movieImageView.rightAnchor, constant: 16).isActive = true
-        discriptionLabel.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -8).isActive = true
-        discriptionLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -20).isActive = true
+        descriptionLabel.topAnchor.constraint(equalTo: movieNameLabel.bottomAnchor, constant: 16).isActive = true
+        descriptionLabel.leftAnchor.constraint(equalTo: movieImageView.rightAnchor, constant: 16).isActive = true
+        descriptionLabel.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -8).isActive = true
     }
 }
