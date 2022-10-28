@@ -16,6 +16,10 @@
 		88183C2C29070E4900B8AEA3 /* Movies.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88183C2B29070E4900B8AEA3 /* Movies.swift */; };
 		88183C2E29071E6A00B8AEA3 /* NetworkManeger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88183C2D29071E6A00B8AEA3 /* NetworkManeger.swift */; };
 		88183C342907C2EF00B8AEA3 /* DescriptionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88183C332907C2EF00B8AEA3 /* DescriptionViewController.swift */; };
+		88183C362907E6E700B8AEA3 /* DescriptionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88183C352907E6E700B8AEA3 /* DescriptionViewCell.swift */; };
+		88183C3829095A2000B8AEA3 /* CastViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88183C3729095A2000B8AEA3 /* CastViewCell.swift */; };
+		88183C3A2909A12D00B8AEA3 /* Cast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88183C392909A12D00B8AEA3 /* Cast.swift */; };
+		88183C3C2909B84700B8AEA3 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88183C3B2909B84700B8AEA3 /* WebViewController.swift */; };
 		88BFF6102906E5C50082221A /* MovieListViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88BFF60F2906E5C50082221A /* MovieListViewCell.swift */; };
 /* End PBXBuildFile section */
 
@@ -31,6 +35,10 @@
 		88183C2B29070E4900B8AEA3 /* Movies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Movies.swift; sourceTree = "<group>"; };
 		88183C2D29071E6A00B8AEA3 /* NetworkManeger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManeger.swift; sourceTree = "<group>"; };
 		88183C332907C2EF00B8AEA3 /* DescriptionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DescriptionViewController.swift; sourceTree = "<group>"; };
+		88183C352907E6E700B8AEA3 /* DescriptionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DescriptionViewCell.swift; sourceTree = "<group>"; };
+		88183C3729095A2000B8AEA3 /* CastViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CastViewCell.swift; sourceTree = "<group>"; };
+		88183C392909A12D00B8AEA3 /* Cast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cast.swift; sourceTree = "<group>"; };
+		88183C3B2909B84700B8AEA3 /* WebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
 		88BFF60F2906E5C50082221A /* MovieListViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieListViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -83,6 +91,7 @@
 			children = (
 				880E04FC2906BE3F00229338 /* MovieListViewController.swift */,
 				88183C332907C2EF00B8AEA3 /* DescriptionViewController.swift */,
+				88183C3B2909B84700B8AEA3 /* WebViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -91,6 +100,8 @@
 			isa = PBXGroup;
 			children = (
 				88BFF60F2906E5C50082221A /* MovieListViewCell.swift */,
+				88183C352907E6E700B8AEA3 /* DescriptionViewCell.swift */,
+				88183C3729095A2000B8AEA3 /* CastViewCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -99,6 +110,7 @@
 			isa = PBXGroup;
 			children = (
 				88183C2B29070E4900B8AEA3 /* Movies.swift */,
+				88183C392909A12D00B8AEA3 /* Cast.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -226,8 +238,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				88183C2C29070E4900B8AEA3 /* Movies.swift in Sources */,
+				88183C3C2909B84700B8AEA3 /* WebViewController.swift in Sources */,
 				88183C342907C2EF00B8AEA3 /* DescriptionViewController.swift in Sources */,
+				88183C3A2909A12D00B8AEA3 /* Cast.swift in Sources */,
 				880E04FD2906BE3F00229338 /* MovieListViewController.swift in Sources */,
+				88183C362907E6E700B8AEA3 /* DescriptionViewCell.swift in Sources */,
+				88183C3829095A2000B8AEA3 /* CastViewCell.swift in Sources */,
 				88183C2E29071E6A00B8AEA3 /* NetworkManeger.swift in Sources */,
 				88BFF6102906E5C50082221A /* MovieListViewCell.swift in Sources */,
 				880E04F92906BE3F00229338 /* AppDelegate.swift in Sources */,

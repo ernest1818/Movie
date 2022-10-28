@@ -4,12 +4,28 @@
 import UIKit
 
 /// Экран описания фильмов
-class DescriptionViewController: UIViewController {
+final class DescriptionViewController: UIViewController {
+    private enum Constants {
+        static let cellIdentifire = "descriptionCell"
+    }
+
+    private enum CellType {
+        case descriptionCell
+    }
+
+    // MARK: - Private Visual Components
+
+    private let tableView = UITableView()
+    private let refreshControl = UIRefreshControl()
+
+    // MARK: - Public Properties
+
+    var url = ""
+
     // MARK: - Private Properties
 
-    private let descriptionImageView = UIImageView()
-    private let descriptionLabel = UILabel()
-    private let avarageLabel = UILabel()
+    private let cellTypes: [CellType] = [.descriptionCell]
+    private var myMovies: Movies?
 
     // MARK: - Life Cyecles
 
@@ -21,43 +37,72 @@ class DescriptionViewController: UIViewController {
     // MARK: - Private Methods
 
     private func setupUI() {
-        createUIDescription()
-        createImageView()
-        createDescriptionLabel()
+        view.backgroundColor = .systemBackground
+        createTableView()
+        createRefreshControl()
+        fetchData()
     }
 
-    private func createUIDescription() {}
-
-    private func createDescriptionLabel() {
-        descriptionLabel.backgroundColor = .orange
-        descriptionLabel.textAlignment = .center
-        view.addSubview(descriptionLabel)
-        createDescriptionLabelAnchor()
+    private func fetchData() {
+        NetworkManager.fetchGenericData(url: url) { (movies: Movies) in
+            self.myMovies = movies
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
+        }
     }
 
-    private func createImageView() {
-        descriptionImageView.backgroundColor = .orange
-        descriptionImageView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(descriptionImageView)
-        createImageViewAnchor()
+    private func createRefreshControl() {
+        refreshControl.addTarget(self, action: #selector(refreshedAction), for: .valueChanged)
+        tableView.addSubview(refreshControl)
     }
 
-    private func createDescriptionLabelAnchor() {
-        NSLayoutConstraint.activate(
-            [
-                descriptionLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
-                descriptionLabel.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 20),
-                descriptionLabel.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -20)
-            ]
-        )
+    private func createTableView() {
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.register(DescriptionViewCell.self, forCellReuseIdentifier: Constants.cellIdentifire)
+        tableView.dataSource = self
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.separatorStyle = .none
+        tableView.allowsSelection = false
+        view.addSubview(tableView)
+        createTableViewAnchor()
     }
 
-    private func createImageViewAnchor() {
-        descriptionImageView.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 10)
-            .isActive = true
-        descriptionImageView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -10)
-            .isActive = true
-        descriptionImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 40)
-            .isActive = true
+    private func createTableViewAnchor() {
+        tableView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+        tableView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+        tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
+        tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
+    }
+
+    @objc private func refreshedAction() {
+        tableView.reloadData()
+        refreshControl.endRefreshing()
+    }
+}
+
+extension DescriptionViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        cellTypes.count
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard
+            let cell = tableView.dequeueReusableCell(
+                withIdentifier: Constants.cellIdentifire,
+                for: indexPath
+            ) as? DescriptionViewCell
+        else {
+            return UITableViewCell()
+        }
+        cell.delegate = self
+        cell.sendMovie(myMovies)
+        return cell
+    }
+}
+
+extension DescriptionViewController: PresentViewControllerDelegate {
+    func goToVC(param: UIViewController) {
+        present(param, animated: true)
     }
 }
