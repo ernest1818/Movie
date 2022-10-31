@@ -15,28 +15,26 @@ final class WebViewController: UIViewController {
 
     // MARK: - Public Properties
 
-    var idForURL = ""
+    var idForURLString = ""
 
     // MARK: - Private Visual Components
 
     private var webView = WKWebView()
     private let toolBar = UIToolbar()
     private let topToolBar = UIToolbar()
-    private var goBackItem = UIBarButtonItem()
-    private var goForvardItem = UIBarButtonItem()
-    private var spacerItem = UIBarButtonItem.flexibleSpace()
-    private var smallspacer = UIBarButtonItem(systemItem: .fixedSpace)
-    private var doneButton = UIBarButtonItem()
-    private var refreshItem = UIBarButtonItem()
-    private var activityIndicatorContainer = UIView()
+    private var goBackBarButtonItem = UIBarButtonItem()
+    private var goForvardBarItem = UIBarButtonItem()
+    private var spacerBarItem = UIBarButtonItem.flexibleSpace()
+    private var smallspacerBarItem = UIBarButtonItem(systemItem: .fixedSpace)
+    private var doneBarButtonItem = UIBarButtonItem()
+    private var refreshBarItem = UIBarButtonItem()
+    private var activityIndicatorContainerView = UIView()
     private var activityIndicator = UIActivityIndicatorView()
 
     // MARK: - Life Cycles
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .brown
-        print(idForURL)
         setupUI()
     }
 
@@ -47,11 +45,11 @@ final class WebViewController: UIViewController {
         createWKWEbView()
         createActivityIndicator()
         createToolBar()
-        createUrl()
+        createURL()
     }
 
-    private func createUrl() {
-        guard let url = URL(string: idForURL) else { return }
+    private func createURL() {
+        guard let url = URL(string: idForURLString) else { return }
         let myRequest = URLRequest(url: url)
         webView.load(myRequest)
     }
@@ -66,17 +64,17 @@ final class WebViewController: UIViewController {
     }
 
     private func createActivityIndicator() {
-        activityIndicatorContainer.translatesAutoresizingMaskIntoConstraints = false
-        activityIndicatorContainer.backgroundColor = UIColor.black
-        activityIndicatorContainer.alpha = 0.7
-        activityIndicatorContainer.layer.cornerRadius = 5
+        activityIndicatorContainerView.translatesAutoresizingMaskIntoConstraints = false
+        activityIndicatorContainerView.backgroundColor = UIColor.black
+        activityIndicatorContainerView.alpha = 0.7
+        activityIndicatorContainerView.layer.cornerRadius = 5
 
         activityIndicator.translatesAutoresizingMaskIntoConstraints = false
         activityIndicator.hidesWhenStopped = true
         activityIndicator.color = .systemOrange
         activityIndicator.style = UIActivityIndicatorView.Style.medium
-        activityIndicatorContainer.addSubview(activityIndicator)
-        webView.addSubview(activityIndicatorContainer)
+        activityIndicatorContainerView.addSubview(activityIndicator)
+        webView.addSubview(activityIndicatorContainerView)
         setupActivityIndicatorContainerAnchor()
         setupActivityIndicatorAnchor()
     }
@@ -100,27 +98,27 @@ final class WebViewController: UIViewController {
     }
 
     private func createToolBarItems() {
-        goBackItem = UIBarButtonItem(
+        goBackBarButtonItem = UIBarButtonItem(
             image: UIImage(systemName: Constants.goBackItem),
             style: .plain,
             target: self,
             action: #selector(goBackAction)
         )
-        goForvardItem = UIBarButtonItem(
+        goForvardBarItem = UIBarButtonItem(
             image: UIImage(systemName: Constants.goForvardItem),
             style: .plain,
             target: self,
             action: #selector(goForwardAction)
         )
 
-        smallspacer.width = 40
-        toolBar.items = [goBackItem, smallspacer, goForvardItem]
+        smallspacerBarItem.width = 40
+        toolBar.items = [goBackBarButtonItem, smallspacerBarItem, goForvardBarItem]
     }
 
     private func createTopToolBarItems() {
-        refreshItem = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(refreshAction))
-        doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneAction))
-        topToolBar.items = [doneButton, spacerItem, refreshItem]
+        refreshBarItem = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(refreshAction))
+        doneBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneAction))
+        topToolBar.items = [doneBarButtonItem, spacerBarItem, refreshBarItem]
     }
 
     private func setupUIAnchors() {
@@ -134,17 +132,17 @@ final class WebViewController: UIViewController {
 
     private func setupActivityIndicatorContainerAnchor() {
         NSLayoutConstraint.activate([
-            activityIndicatorContainer.centerXAnchor.constraint(equalTo: webView.centerXAnchor),
-            activityIndicatorContainer.centerYAnchor.constraint(equalTo: webView.centerYAnchor),
-            activityIndicatorContainer.widthAnchor.constraint(equalTo: webView.widthAnchor, multiplier: 0.09),
-            activityIndicatorContainer.heightAnchor.constraint(equalTo: activityIndicatorContainer.widthAnchor)
+            activityIndicatorContainerView.centerXAnchor.constraint(equalTo: webView.centerXAnchor),
+            activityIndicatorContainerView.centerYAnchor.constraint(equalTo: webView.centerYAnchor),
+            activityIndicatorContainerView.widthAnchor.constraint(equalTo: webView.widthAnchor, multiplier: 0.09),
+            activityIndicatorContainerView.heightAnchor.constraint(equalTo: activityIndicatorContainerView.widthAnchor)
         ])
     }
 
     private func setupActivityIndicatorAnchor() {
         NSLayoutConstraint.activate([
-            activityIndicator.centerXAnchor.constraint(equalTo: activityIndicatorContainer.centerXAnchor),
-            activityIndicator.centerYAnchor.constraint(equalTo: activityIndicatorContainer.centerYAnchor)
+            activityIndicator.centerXAnchor.constraint(equalTo: activityIndicatorContainerView.centerXAnchor),
+            activityIndicator.centerYAnchor.constraint(equalTo: activityIndicatorContainerView.centerYAnchor)
         ])
     }
 
@@ -172,7 +170,7 @@ final class WebViewController: UIViewController {
             activityIndicator.startAnimating()
         } else {
             activityIndicator.stopAnimating()
-            activityIndicatorContainer.isHidden = true
+            activityIndicatorContainerView.isHidden = true
         }
     }
 

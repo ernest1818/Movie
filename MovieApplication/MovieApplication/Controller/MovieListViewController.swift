@@ -25,7 +25,7 @@ final class MovieListViewController: UIViewController {
     // MARK: - Private Visual Components
 
     private let tableView = UITableView()
-    private lazy var header: UIView = {
+    private lazy var headerView: UIView = {
         let headerView = UIView()
         headerView.translatesAutoresizingMaskIntoConstraints = false
         return headerView
@@ -47,7 +47,7 @@ final class MovieListViewController: UIViewController {
     // MARK: - Private Properties
 
     private var movies: [Movies]?
-    private var url = Constants.popularUrl
+    private var urlString = Constants.popularUrl
 
     // MARK: - Life Cycles
 
@@ -63,14 +63,13 @@ final class MovieListViewController: UIViewController {
         fetchData()
         createTableView()
         createViewConfiguration()
-        tableView.reloadData()
     }
 
     private func fetchData() {
-        NetworkManager.fetchGenericData(url: url, comlition: { (movies: MoviesResult) in
-            self.movies = movies.results
+        NetworkManager.fetchGenericData(url: urlString, comlition: { [weak self] (movies: MoviesResult) in
+            self?.movies = movies.results
             DispatchQueue.main.async {
-                self.tableView.reloadData()
+                self?.tableView.reloadData()
             }
         })
     }
@@ -95,59 +94,67 @@ final class MovieListViewController: UIViewController {
     private func createSegmentControl() {
         segmentControl.backgroundColor = .systemOrange
         segmentControl.addTarget(self, action: #selector(segmentControlAction), for: .valueChanged)
-        view.addSubview(header)
-        header.addSubview(segmentControl)
+        view.addSubview(headerView)
+        headerView.addSubview(segmentControl)
         createSegmentConrolAnchor()
         createHeaderAncgor()
     }
 
     private func createSegmentConrolAnchor() {
-        segmentControl.centerXAnchor.constraint(equalTo: header.centerXAnchor).isActive = true
-        segmentControl.widthAnchor.constraint(equalTo: header.widthAnchor).isActive = true
-        segmentControl.heightAnchor.constraint(equalTo: header.heightAnchor, multiplier: 1).isActive = true
+        segmentControl.centerXAnchor.constraint(equalTo: headerView.centerXAnchor).isActive = true
+        segmentControl.widthAnchor.constraint(equalTo: headerView.widthAnchor).isActive = true
+        segmentControl.heightAnchor.constraint(equalTo: headerView.heightAnchor, multiplier: 1).isActive = true
     }
 
     private func createHeaderAncgor() {
-        header.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
-        header.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-        header.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
-        header.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.05).isActive = true
+        headerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
+        headerView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+        headerView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+        headerView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.05).isActive = true
     }
 
     private func createTableViewAnchor() {
         tableView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
         tableView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
-        tableView.topAnchor.constraint(equalTo: header.bottomAnchor, constant: 10).isActive = true
+        tableView.topAnchor.constraint(equalTo: headerView.bottomAnchor, constant: 10).isActive = true
         tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
+    }
+
+    private func getToDiscriptionVC(path: IndexPath) {
+        let descriptionVS = DescriptionViewController()
+        guard let id = movies?[path.row].id else { return }
+        descriptionVS
+            .urlString = "\(Constants.movieLink)\(id)\(Constants.apiKeyLink)\(Constants.languageLink)"
+        navigationController?.pushViewController(descriptionVS, animated: true)
     }
 
     @objc private func segmentControlAction() {
         switch segmentControl.selectedSegmentIndex {
         case 0:
-            NetworkManager.fetchGenericData(url: Constants.popularUrl) { (movies: MoviesResult) in
-                self.movies = movies.results
+            NetworkManager.fetchGenericData(url: Constants.popularUrl) { [weak self] (movies: MoviesResult) in
+                self?.movies = movies.results
                 DispatchQueue.main.async {
-                    self.tableView.reloadData()
+                    self?.tableView.reloadData()
                     let indexPath = IndexPath(row: 0, section: 0)
-                    self.tableView.scrollToRow(at: indexPath, at: .top, animated: true)
+                    self?.tableView.scrollToRow(at: indexPath, at: .top, animated: true)
                 }
             }
         case 1:
-            NetworkManager.fetchGenericData(url: Constants.topUrl) { (movies: MoviesResult) in
-                self.movies = movies.results
+            NetworkManager.fetchGenericData(url: Constants.topUrl) { [weak self] (movies: MoviesResult) in
+                self?.movies = movies.results
                 DispatchQueue.main.async {
-                    self.tableView.reloadData()
+                    self?.tableView.reloadData()
                     let indexPath = IndexPath(row: 0, section: 0)
-                    self.tableView.scrollToRow(at: indexPath, at: .top, animated: true)
+                    self?.tableView.scrollToRow(at: indexPath, at: .top, animated: true)
                 }
             }
         case 2:
-            NetworkManager.fetchGenericData(url: Constants.upCommingUrl) { (movies: MoviesResult) in
-                self.movies = movies.results
+            NetworkManager.fetchGenericData(url: Constants.upCommingUrl) { [weak self] (movies: MoviesResult) in
+                self?.movies = movies.results
                 DispatchQueue.main.async {
-                    self.tableView.reloadData()
+                    self?.tableView.reloadData()
                     let indexPath = IndexPath(row: 0, section: 0)
-                    self.tableView.scrollToRow(at: indexPath, at: .top, animated: true)
+                    self?.tableView.scrollToRow(at: indexPath, at: .top, animated: true)
                 }
             }
         default:
@@ -178,10 +185,6 @@ extension MovieListViewController: UITableViewDataSource, UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let descriptionVS = DescriptionViewController()
-        guard let id = movies?[indexPath.row].id else { return }
-        descriptionVS
-            .url = "\(Constants.movieLink)\(id)\(Constants.apiKeyLink)\(Constants.languageLink)"
-        navigationController?.pushViewController(descriptionVS, animated: true)
+        getToDiscriptionVC(path: indexPath)
     }
 }

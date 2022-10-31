@@ -3,7 +3,7 @@
 
 import UIKit
 
-///
+/// Ячейка с фильмом
 final class MovieListViewCell: UITableViewCell {
     private enum Constants {
         static let imageUrl = "https://image.tmdb.org/t/p/w200"
@@ -31,14 +31,7 @@ final class MovieListViewCell: UITableViewCell {
     // MARK: - Public Methods
 
     func movies(_ movie: Movies) {
-        movieNameLabel.text = movie.title
-        descriptionLabel.text = movie.overview
-        voteAverageLabel.text = "\(movie.voteAverage)"
-        Constants.imageUrlTwo = movie.posterPath
-        let imageUrl = Constants.imageUrl + Constants.imageUrlTwo
-        NetworkManager.downLoadImage(url: imageUrl) { image in
-            self.movieImageView.image = image
-        }
+        movieDestribution(movie)
     }
 
     // MARK: - Private Methods
@@ -114,5 +107,16 @@ final class MovieListViewCell: UITableViewCell {
         descriptionLabel.leftAnchor.constraint(equalTo: movieImageView.rightAnchor, constant: 16).isActive = true
         descriptionLabel.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -8).isActive = true
         descriptionLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8).isActive = true
+    }
+
+    private func movieDestribution(_ movie: Movies) {
+        movieNameLabel.text = movie.title
+        descriptionLabel.text = movie.overview
+        voteAverageLabel.text = "\(movie.voteAverage)"
+        Constants.imageUrlTwo = movie.posterPath
+        let imageUrl = Constants.imageUrl + Constants.imageUrlTwo
+        NetworkManager.downLoadImage(url: imageUrl) { [weak self] image in
+            self?.movieImageView.image = image
+        }
     }
 }

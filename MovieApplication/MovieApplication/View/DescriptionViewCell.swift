@@ -51,7 +51,7 @@ final class DescriptionViewCell: UITableViewCell {
 
     // MARK: - Private properties
 
-    private var cast: Cast = .init()
+    private var cast: MovieCast = .init()
 
     // MARK: - Life Cycles
 
@@ -64,34 +64,10 @@ final class DescriptionViewCell: UITableViewCell {
 
     func sendMovie(_ movie: Movies?) {
         guard let movie = movie else { return }
-        movieNameLabel.text = movie.title
-        imdbId = movie.imdbId ?? ""
-        descriptionLabel.text = "\(movie.overview)"
-        avarageLabel.text = "⭐️\(movie.voteAverage)"
-        runtimeLabel.text = Constants.runtimeText + "\(movie.runtime ?? 0)" + " " + Constants.minutes
-        budgetLabel.text = Constants.budgetText + "\(movie.budget ?? 0) $"
-        revenueLabel.text = Constants.revenueText + "\(movie.revenue ?? 0) $"
-
-        guard let genre = movie.genres?.first else { return }
-        genreLabel.text = Constants.genreText + (genre.name ?? "")
-
-        let imageUrl = Constants.imageUrl + (movie.posterPath)
-        let backdropImage = Constants.imageUrl + (movie.backdropPath)
-        NetworkManager.downLoadImage(url: imageUrl) { image in
-            self.posterImageView.image = image
-        }
-
-        NetworkManager.downLoadImage(url: backdropImage) { image in
-            self.backdropImageView.image = image
-        }
-
-        let url = Constants.movieLink + String(movie.id) + Constants.creditsLink + Constants.apiKey
-        NetworkManager.fetchGenericData(url: url) { (credits: Cast) in
-            self.cast = credits
-            DispatchQueue.main.async {
-                self.collectionView?.reloadData()
-            }
-        }
+        getPosterImage(movie)
+        getBackdropImage(movie)
+        getMovieCastData(movie)
+        movieDestribution(movie)
     }
 
     // MARK: - Private Methods
@@ -367,9 +343,45 @@ final class DescriptionViewCell: UITableViewCell {
         collectionView.bottomAnchor.constraint(equalTo: conteinerView.bottomAnchor).isActive = true
     }
 
+    private func getPosterImage(_ movie: Movies) {
+        let imageURL = Constants.imageUrl + (movie.posterPath)
+        NetworkManager.downLoadImage(url: imageURL) { [weak self] image in
+            self?.posterImageView.image = image
+        }
+    }
+
+    private func getBackdropImage(_ movie: Movies) {
+        let backdropImage = Constants.imageUrl + (movie.backdropPath)
+        NetworkManager.downLoadImage(url: backdropImage) { [weak self] image in
+            self?.backdropImageView.image = image
+        }
+    }
+
+    private func movieDestribution(_ movie: Movies) {
+        movieNameLabel.text = movie.title
+        imdbId = movie.imdbId ?? ""
+        descriptionLabel.text = "\(movie.overview)"
+        avarageLabel.text = "⭐️\(movie.voteAverage)"
+        runtimeLabel.text = Constants.runtimeText + "\(movie.runtime ?? 0)" + " " + Constants.minutes
+        budgetLabel.text = Constants.budgetText + "\(movie.budget ?? 0) $"
+        revenueLabel.text = Constants.revenueText + "\(movie.revenue ?? 0) $"
+        guard let genre = movie.genres?.first else { return }
+        genreLabel.text = Constants.genreText + (genre.name ?? "")
+    }
+
+    private func getMovieCastData(_ movie: Movies) {
+        let url = Constants.movieLink + String(movie.id) + Constants.creditsLink + Constants.apiKey
+        NetworkManager.fetchGenericData(url: url) { [weak self] (credits: MovieCast) in
+            self?.cast = credits
+            DispatchQueue.main.async {
+                self?.collectionView?.reloadData()
+            }
+        }
+    }
+
     @objc private func goWebControllerAction() {
         let webViewController = WebViewController()
-        webViewController.idForURL = Constants.imdbUrl + imdbId
+        webViewController.idForURLString = Constants.imdbUrl + imdbId
         delegate?.goToVC(param: webViewController)
     }
 }
@@ -393,7 +405,7 @@ extension DescriptionViewCell: UICollectionViewDataSource {
         else {
             return UICollectionViewCell()
         }
-        cell.updateInfo(info: cast.cast?[indexPath.row] ?? DescriptionCast())
+        cell.updateInfo(info: cast.cast?[indexPath.row] ?? Cast())
         return cell
     }
 }

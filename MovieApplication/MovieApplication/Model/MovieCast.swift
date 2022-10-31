@@ -1,15 +1,15 @@
-// Cast.swift
+// MovieCast.swift
 // Copyright © RoadMap. All rights reserved.
 
 import Foundation
 
 /// Актеры кино
-struct Cast: Decodable {
-    var cast: [DescriptionCast]?
+struct MovieCast: Decodable {
+    var cast: [Cast]?
 }
 
 /// Информация об актере
-struct DescriptionCast: Decodable {
+struct Cast: Decodable {
     var profilePath: String?
     var originalName: String?
 }

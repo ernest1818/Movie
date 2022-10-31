@@ -20,12 +20,12 @@ final class DescriptionViewController: UIViewController {
 
     // MARK: - Public Properties
 
-    var url = ""
+    var urlString = ""
 
     // MARK: - Private Properties
 
     private let cellTypes: [CellType] = [.descriptionCell]
-    private var myMovies: Movies?
+    private var movie: Movies?
 
     // MARK: - Life Cyecles
 
@@ -37,17 +37,21 @@ final class DescriptionViewController: UIViewController {
     // MARK: - Private Methods
 
     private func setupUI() {
-        view.backgroundColor = .systemBackground
+        configurateView()
         createTableView()
         createRefreshControl()
         fetchData()
     }
 
+    private func configurateView() {
+        view.backgroundColor = .systemBackground
+    }
+
     private func fetchData() {
-        NetworkManager.fetchGenericData(url: url) { (movies: Movies) in
-            self.myMovies = movies
+        NetworkManager.fetchGenericData(url: urlString) { [weak self] (movies: Movies) in
+            self?.movie = movies
             DispatchQueue.main.async {
-                self.tableView.reloadData()
+                self?.tableView.reloadData()
             }
         }
     }
@@ -96,7 +100,7 @@ extension DescriptionViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         cell.delegate = self
-        cell.sendMovie(myMovies)
+        cell.sendMovie(movie)
         return cell
     }
 }

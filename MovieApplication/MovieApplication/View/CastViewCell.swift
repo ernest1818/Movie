@@ -6,7 +6,7 @@ import UIKit
 // Ячейка с актерами
 final class CastViewCell: UICollectionViewCell {
     private enum Constants {
-        static let imageUrl = "https://image.tmdb.org/t/p/w500"
+        static let imageURL = "https://image.tmdb.org/t/p/w500"
     }
 
     // MARK: - Private Visual Component
@@ -28,11 +28,11 @@ final class CastViewCell: UICollectionViewCell {
 
     // MARK: - Public Methods
 
-    func updateInfo(info: DescriptionCast) {
+    func updateInfo(info: Cast) {
         castLabel.text = info.originalName
-        let imageUrl = Constants.imageUrl + (info.profilePath ?? "")
-        NetworkManager.downLoadImage(url: imageUrl) { image in
-            self.castImageView.image = image
+        let imageURL = Constants.imageURL + (info.profilePath ?? "")
+        NetworkManager.downLoadImage(url: imageURL) { [weak self] image in
+            self?.castImageView.image = image
         }
     }
 
