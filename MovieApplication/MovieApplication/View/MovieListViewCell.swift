@@ -3,18 +3,19 @@
 
 import UIKit
 
-///
+/// Ячейка с фильмом
 final class MovieListViewCell: UITableViewCell {
     private enum Constants {
-        static let imageUrl = "https://image.tmdb.org/t/p/w500"
+        static let imageUrl = "https://image.tmdb.org/t/p/w200"
         static var imageUrlTwo = ""
     }
 
-    // MARK: - Private properties
+    // MARK: - Visual Components
 
     private let movieImageView = UIImageView()
     private let movieNameLabel = UILabel()
     private let descriptionLabel = UILabel()
+    private let voteAverageLabel = UILabel()
 
     // MARK: - Life Cycles
 
@@ -30,13 +31,7 @@ final class MovieListViewCell: UITableViewCell {
     // MARK: - Public Methods
 
     func movies(_ movie: Movies) {
-        movieNameLabel.text = movie.title
-        descriptionLabel.text = movie.overview
-        Constants.imageUrlTwo = movie.posterPath
-        let imageUrl = Constants.imageUrl + Constants.imageUrlTwo
-        NetworkManager.downLoadImage(url: imageUrl) { image in
-            self.movieImageView.image = image
-        }
+        movieDestribution(movie)
     }
 
     // MARK: - Private Methods
@@ -45,6 +40,7 @@ final class MovieListViewCell: UITableViewCell {
         createImageVIew()
         createNameLabel()
         createDiscriptionabel()
+        createAvarageLabel()
     }
 
     private func createImageVIew() {
@@ -57,23 +53,39 @@ final class MovieListViewCell: UITableViewCell {
     }
 
     private func createNameLabel() {
-        movieNameLabel.backgroundColor = .red
         movieNameLabel.textAlignment = .center
         movieNameLabel.lineBreakMode = .byWordWrapping
         movieNameLabel.numberOfLines = 0
-        movieNameLabel.font = .systemFont(ofSize: 12, weight: .semibold)
+        movieNameLabel.font = .systemFont(ofSize: 15, weight: .bold)
         movieNameLabel.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(movieNameLabel)
         createNameLabelAnchor()
     }
 
     private func createDiscriptionabel() {
-        descriptionLabel.backgroundColor = .red
         descriptionLabel.numberOfLines = 10
-        descriptionLabel.font = .systemFont(ofSize: 15, weight: .semibold)
+        descriptionLabel.font = .systemFont(ofSize: 13, weight: .semibold)
         descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(descriptionLabel)
         createDiscriptionLabelAnchor()
+    }
+
+    private func createAvarageLabel() {
+        voteAverageLabel.backgroundColor = .systemOrange
+        voteAverageLabel.translatesAutoresizingMaskIntoConstraints = false
+        voteAverageLabel.layer.cornerRadius = 5
+        voteAverageLabel.layer.masksToBounds = true
+        voteAverageLabel.textAlignment = .center
+        voteAverageLabel.font = .systemFont(ofSize: 15, weight: .bold)
+        movieImageView.addSubview(voteAverageLabel)
+        createAvarageLabelAnchor()
+    }
+
+    private func createAvarageLabelAnchor() {
+        voteAverageLabel.bottomAnchor.constraint(equalTo: movieImageView.bottomAnchor, constant: -5).isActive = true
+        voteAverageLabel.rightAnchor.constraint(equalTo: movieImageView.rightAnchor, constant: -5).isActive = true
+        voteAverageLabel.heightAnchor.constraint(equalToConstant: 20).isActive = true
+        voteAverageLabel.widthAnchor.constraint(equalToConstant: 30).isActive = true
     }
 
     private func createImageViewAnchor() {
@@ -94,5 +106,17 @@ final class MovieListViewCell: UITableViewCell {
         descriptionLabel.topAnchor.constraint(equalTo: movieNameLabel.bottomAnchor, constant: 16).isActive = true
         descriptionLabel.leftAnchor.constraint(equalTo: movieImageView.rightAnchor, constant: 16).isActive = true
         descriptionLabel.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -8).isActive = true
+        descriptionLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8).isActive = true
+    }
+
+    private func movieDestribution(_ movie: Movies) {
+        movieNameLabel.text = movie.title
+        descriptionLabel.text = movie.overview
+        voteAverageLabel.text = "\(movie.voteAverage)"
+        Constants.imageUrlTwo = movie.posterPath
+        let imageUrl = Constants.imageUrl + Constants.imageUrlTwo
+        NetworkManager.downLoadImage(url: imageUrl) { [weak self] image in
+            self?.movieImageView.image = image
+        }
     }
 }

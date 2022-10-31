@@ -4,7 +4,7 @@
 import UIKit
 
 /// Получение данных по API - основной
-class NetworkManager {
+final class NetworkManager {
     static func downLoadImage(url: String, comlition: @escaping (_ image: UIImage) -> ()) {
         guard let url = URL(string: url) else { return }
 
@@ -18,19 +18,20 @@ class NetworkManager {
         }.resume()
     }
 
-    static func fetchData(url: String, comlition: @escaping (_ movies: MoviesResult) -> ()) {
+    static func fetchGenericData<T: Decodable>(
+        url: String,
+        comlition: @escaping (T) -> ()
+    ) {
         guard let url = URL(string: url) else { return }
+        let urlSession = URLSession(configuration: .ephemeral)
 
-        URLSession.shared.dataTask(with: url) { data, _, _ in
+        urlSession.dataTask(with: url) { data, _, _ in
             guard let data = data else { return }
-
-            print(data)
 
             do {
                 let decoder = JSONDecoder()
                 decoder.keyDecodingStrategy = .convertFromSnakeCase
-                let moviesDiscription = try decoder.decode(MoviesResult.self, from: data)
-                print(moviesDiscription)
+                let moviesDiscription = try decoder.decode(T.self, from: data)
                 comlition(moviesDiscription)
             } catch {
                 print("error since", error)
